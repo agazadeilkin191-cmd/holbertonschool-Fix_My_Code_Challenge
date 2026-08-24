@@ -11,103 +11,48 @@
  */
 int delete_dnodeint_at_index(dlistint_t **head, unsigned int index)
 {
-	dlistint_t *current;
-	unsigned int i;
+	dlistint_t *saved_head;
+	dlistint_t *tmp;
+	unsigned int p;
 
 	if (head == NULL || *head == NULL)
 	{
 		return (-1);
 	}
-
-	current = *head;
-
-	if (index == 0)
+	saved_head = *head;
+	p = 0;
+	while (p < index && *head != NULL)
 	{
-		*head = current->next;
-		if (*head != NULL)
-		{
-			(*head)->prev = NULL;
-		}
-		free(current);
-		return (1);
+		*head = (*head)->next;
+		p++;
 	}
-
-	for (i = 0; current != NULL && i < index; i++)
+	if (p != index)
 	{
-		current = current->next;
-	}
-
-	if (current == NULL)
-	{
+		*head = saved_head;
 		return (-1);
 	}
-
-	if (current->next != NULL)
+	if (0 == index)
 	{
-		current->next->prev = current->prev;
+		tmp = (*head)->next;
+		free(*head);
+		*head = tmp;
+		if (tmp != NULL)
+		{
+			tmp->prev = NULL;
+		}
 	}
-
-	if (current->prev != NULL)
+	else
 	{
-		current->prev->next = current->next;
+		if ((*head)->prev != NULL)
+		{
+			(*head)->prev->next = (*head)->next;
+		}
+		if ((*head)->next != NULL)
+		{
+			(*head)->next->prev = (*head)->prev;
+		}
+		free(*head);
+		*head = saved_head;
 	}
-
-	free(current);
 	return (1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
